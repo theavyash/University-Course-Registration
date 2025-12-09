@@ -39,6 +39,11 @@ public:
     
     // Schedule setters
     void setSchedule(const std::string& dayOfWeek, const std::string& startTime, const std::string& endTime);
+    
+    // NEW: Setters for Admin to modify courses (Member 3)
+    void setCourseName(const std::string& name);
+    void setCapacity(int newCapacity);
+    std::string getCourseName() const;
 
     bool isStudentEnrolled(const std::string& studentID) const;
     void enrollStudent(const std::string& studentID);
@@ -49,4 +54,3 @@ public:
 };
 
 #endif
-
