@@ -3,6 +3,7 @@
 
 #include "User.h"
 #include "Course.h"
+#include "Student.h"
 #include <vector>
 #include <string>
 
@@ -11,12 +12,13 @@ using namespace std;
 // Admin class - demonstrates INHERITANCE and POLYMORPHISM
 class Admin : public User {
 public:
-    // Constructor
+    // Constructors
     Admin();
-    Admin(string id, string name, string email, string password);
+    Admin(string username, string password, string email, string name, string userID);
 
-    // POLYMORPHISM: Override base class function
-    void displayInfo() const override;
+    // POLYMORPHISM: Override pure virtual functions from User
+    void displayMenu() override;
+    string getUserType() const override;
     
     // Admin-specific course management functions
     void addCourse(vector<Course>& courses, const Course& newCourse);
@@ -25,10 +27,16 @@ public:
     void viewAllCourses(const vector<Course>& courses) const;
     
     // View enrolled students in a specific course
-    void viewCourseEnrollments(const string& courseCode) const;
+    void viewCourseEnrollments(const vector<Course>& courses, const string& courseCode) const;
+    
+    // View all students in the system
+    void viewAllStudents(const vector<Student>& students) const;
     
     // Serialize for file I/O
-    string serialize() const override;
+    string serialize() const;
+    
+    // Deserialize from file
+    static Admin deserialize(const string& data);
 };
 
 #endif // ADMIN_H
