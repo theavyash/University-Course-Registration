@@ -1,5 +1,5 @@
 #include "../include/FileManager.h"
-#include "../include/RegistrationException.h"
+#include "../include/CustomExceptions.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -21,7 +21,7 @@ void FileManager::saveAdmins(const vector<Admin>& admins) const {
     ofstream file(adminsFilePath, ios::trunc);
     
     if (!file.is_open()) {
-        throw RegistrationException("Error: Cannot open admins file for writing: " + adminsFilePath);
+        throw FileException(adminsFilePath, "write");
     }
     
     for (const auto& admin : admins) {
@@ -74,7 +74,7 @@ void FileManager::appendAdmin(const Admin& admin) const {
     ofstream file(adminsFilePath, ios::app);
     
     if (!file.is_open()) {
-        throw RegistrationException("Error: Cannot open admins file for appending: " + adminsFilePath);
+        throw FileException(adminsFilePath, "append");
     }
     
     file << admin.serialize() << endl;
