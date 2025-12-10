@@ -1,5 +1,5 @@
 #include "../include/Admin.h"
-#include "../include/RegistrationException.h"
+#include "../include/CustomExceptions.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
