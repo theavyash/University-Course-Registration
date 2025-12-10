@@ -110,3 +110,15 @@ bool Course::hasTimeConflict(const Course& other) const {
     return (thisStart < otherEnd && thisEnd > otherStart);
 }
 
+// NEW IMPLEMENTATIONS (Member 3: For Admin to modify courses)
+void Course::setCourseName(const std::string& name) {
+    this->title = name;
+}
+
+void Course::setCapacity(int newCapacity) {
+    this->capacity = newCapacity;
+}
+
+std::string Course::getCourseName() const {
+    return title;
+}
