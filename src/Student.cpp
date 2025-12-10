@@ -91,15 +91,19 @@ int Student::getTotalEnrolledCourses() const {
 }
 
 // POLYMORPHISM: Override displayMenu() from User
+// POLYMORPHISM: Override displayMenu() from User
 void Student::displayMenu() {
-    cout << "\n=====================================" << endl;
-    cout << "         STUDENT MENU                " << endl;
-    cout << "=====================================" << endl;
-    cout << " 1. View My Information             " << endl;
-    cout << " 2. View My Enrolled Courses        " << endl;
-    cout << " 3. Logout                          " << endl;
-    cout << "=====================================" << endl;
-    cout << "Enter choice: ";
+    cout << "\n========================================\n";
+    cout << "         STUDENT MENU                   \n";
+    cout << "========================================\n";
+    cout << " 1. View My Information\n";
+    cout << " 2. View My Enrolled Courses\n";
+    cout << " 3. View All Available Courses\n";
+    cout << " 4. Register for a Course\n";
+    cout << " 5. Drop a Course\n";
+    cout << " 6. Logout\n";
+    cout << "========================================\n";
+    cout << "Enter your choice: ";
 }
 
 // POLYMORPHISM: Override getUserType() from User
