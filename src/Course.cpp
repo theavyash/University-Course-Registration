@@ -1,5 +1,5 @@
 #include "../include/Course.h"
-#include "../include/RegistrationException.h"
+#include "../include/CustomExceptions.h"
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
@@ -39,10 +39,10 @@ bool Course::isStudentEnrolled(const std::string& studentID) const {
 
 void Course::enrollStudent(const std::string& studentID) {
     if (isStudentEnrolled(studentID)) {
-        throw RegistrationException("Student already enrolled in " + code);
+        throw DuplicateEntryException("student enrollment", studentID + " in " + code);
     }
     if (seatsRemaining() <= 0) {
-        throw RegistrationException("Course " + code + " is full");
+        throw CourseFullException(code);
     }
     enrolledStudentIDs.push_back(studentID);
 }
@@ -55,7 +55,7 @@ void Course::dropStudent(const std::string& studentID) {
     enrolledStudentIDs.erase(it);
 }
 
-// Schedule getters (Member 2: Schedule data management)
+// Schedule getters
 const std::string& Course::getDayOfWeek() const {
     return dayOfWeek;
 }
@@ -87,7 +87,7 @@ int Course::timeToMinutes(const std::string& time) const {
     return 0;
 }
 
-// Time conflict detection (Member 2: Time conflict detection)
+// Time conflict detection
 bool Course::hasTimeConflict(const Course& other) const {
     // If either course has no schedule, no conflict
     if (dayOfWeek.empty() || other.dayOfWeek.empty()) {
@@ -106,11 +106,10 @@ bool Course::hasTimeConflict(const Course& other) const {
     int otherEnd = timeToMinutes(other.endTime);
     
     // Check for overlap: courses conflict if their time ranges overlap
-    // Overlap occurs if: thisStart < otherEnd AND thisEnd > otherStart
     return (thisStart < otherEnd && thisEnd > otherStart);
 }
 
-// NEW IMPLEMENTATIONS (Member 3: For Admin to modify courses)
+// Member 3: Setters for Admin to modify courses
 void Course::setCourseName(const std::string& name) {
     this->title = name;
 }
