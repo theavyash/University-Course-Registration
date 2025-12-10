@@ -11,18 +11,17 @@ private:
     int capacity;
     std::vector<std::string> enrolledStudentIDs;
     
-    // Schedule information (Member 2: Schedule data management)
-    std::string dayOfWeek;      // e.g., "Monday", "Tuesday"
-    std::string startTime;      // e.g., "09:00" (24-hour format)
-    std::string endTime;         // e.g., "10:30" (24-hour format)
+    // Schedule information
+    std::string dayOfWeek;
+    std::string startTime;
+    std::string endTime;
 
-    // Helper method to convert time string to minutes for comparison
+    // Helper method
     int timeToMinutes(const std::string& time) const;
 
 public:
     Course();
     Course(const std::string& code, const std::string& title, int capacity);
-    // Constructor with schedule (Member 2: Enhanced Course class)
     Course(const std::string& code, const std::string& title, int capacity,
            const std::string& dayOfWeek, const std::string& startTime, const std::string& endTime);
 
@@ -32,15 +31,13 @@ public:
     int seatsRemaining() const;
     const std::vector<std::string>& getEnrolledStudentIDs() const;
     
-    // Schedule getters (Member 2: Schedule data management)
     const std::string& getDayOfWeek() const;
     const std::string& getStartTime() const;
     const std::string& getEndTime() const;
     
-    // Schedule setters
     void setSchedule(const std::string& dayOfWeek, const std::string& startTime, const std::string& endTime);
     
-    // NEW: Setters for Admin to modify courses (Member 3)
+    // Member 3: Setters for Admin to modify courses
     void setCourseName(const std::string& name);
     void setCapacity(int newCapacity);
     std::string getCourseName() const;
@@ -49,7 +46,6 @@ public:
     void enrollStudent(const std::string& studentID);
     void dropStudent(const std::string& studentID);
     
-    // Time conflict detection (Member 2: Time conflict detection)
     bool hasTimeConflict(const Course& other) const;
 };
 
