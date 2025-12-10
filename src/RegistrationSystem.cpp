@@ -1,4 +1,5 @@
-    #include "../include/RegistrationSystem.h"
+#include "../include/RegistrationSystem.h"
+#include "../include/CustomExceptions.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -48,7 +49,7 @@ Student& RegistrationSystem::createStudent(const std::string& username,
                                            const std::string& major,
                                            double gpa) {
     if (findStudent(username) != nullptr) {
-        throw RegistrationException("Username already exists");
+        throw DuplicateEntryException("username", username);
     }
     students.emplace_back(username, password, email, name, userID, studentID, major, gpa);
     return students.back();
@@ -56,8 +57,11 @@ Student& RegistrationSystem::createStudent(const std::string& username,
 
 Student* RegistrationSystem::login(const std::string& username, const std::string& password) {
     Student* student = findStudent(username);
-    if (student == nullptr || student->getPassword() != password) {
-        return nullptr;
+    if (student == nullptr) {
+        throw AuthenticationException("Username not found");
+    }
+    if (student->getPassword() != password) {
+        throw AuthenticationException("Incorrect password");
     }
     return student;
 }
@@ -68,14 +72,12 @@ void RegistrationSystem::registerForCourse(Student& student, const std::string& 
         throw RegistrationException("Course " + courseCode + " not found");
     }
     
-    // Member 2: Time conflict detection
     // Check for time conflicts with already enrolled courses
     const auto& enrolledCourseCodes = student.getEnrolledCourses();
     for (const auto& enrolledCode : enrolledCourseCodes) {
         Course* enrolledCourse = findCourse(enrolledCode);
         if (enrolledCourse && course->hasTimeConflict(*enrolledCourse)) {
-            throw RegistrationException("Time conflict: " + courseCode + " conflicts with " + enrolledCode + 
-                                      " (Both on " + course->getDayOfWeek() + ")");
+            throw TimeConflictException(courseCode, enrolledCode, course->getDayOfWeek());
         }
     }
     
@@ -102,7 +104,6 @@ void RegistrationSystem::listCourses() const {
         std::cout << "Title: " << course.getTitle() << std::endl;
         std::cout << "Capacity: " << course.getCapacity() 
                   << " | Seats Remaining: " << course.seatsRemaining() << std::endl;
-        // Member 2: Display schedule information
         if (!course.getDayOfWeek().empty()) {
             std::cout << "Schedule: " << course.getDayOfWeek() 
                       << " " << course.getStartTime() 
@@ -128,7 +129,7 @@ std::vector<std::string> RegistrationSystem::split(const std::string& input, cha
 void RegistrationSystem::loadCourses() {
     std::ifstream file(coursesFilePath);
     if (!file.is_open()) {
-        std::cout << "No course file found. Starting with a sample course list." << std::endl;
+        std::cout << "No course file found. Starting with sample courses." << std::endl;
     } else {
         std::string line;
         while (std::getline(file, line)) {
@@ -136,7 +137,6 @@ void RegistrationSystem::loadCourses() {
             std::stringstream ss(line);
             std::string code, title, capacityStr, dayOfWeek, startTime, endTime, enrolledStr;
             
-            // Member 2: Load schedule data from file
             std::getline(ss, code, '|');
             std::getline(ss, title, '|');
             std::getline(ss, capacityStr, '|');
@@ -160,7 +160,6 @@ void RegistrationSystem::loadCourses() {
     }
 
     if (courses.empty()) {
-        // Member 2: Provide starter data with schedule information
         courses.emplace_back("CS101", "Intro to Programming", 30, "Monday", "09:00", "10:30");
         courses.emplace_back("MATH201", "Discrete Mathematics", 25, "Tuesday", "14:00", "15:30");
         courses.emplace_back("ENG150", "Academic Writing", 40, "Wednesday", "10:00", "11:30");
@@ -198,8 +197,11 @@ void RegistrationSystem::loadStudents() {
 
 void RegistrationSystem::saveCourses() const {
     std::ofstream file(coursesFilePath, std::ios::trunc);
+    if (!file.is_open()) {
+        throw FileException(coursesFilePath, "write");
+    }
+    
     for (const auto& course : courses) {
-        // Member 2: Save schedule data to file
         file << course.getCode() << '|'
              << course.getTitle() << '|'
              << course.getCapacity() << '|'
@@ -217,6 +219,10 @@ void RegistrationSystem::saveCourses() const {
 
 void RegistrationSystem::saveStudents() const {
     std::ofstream file(studentsFilePath, std::ios::trunc);
+    if (!file.is_open()) {
+        throw FileException(studentsFilePath, "write");
+    }
+    
     for (const auto& student : students) {
         file << student.getUsername() << '|'
              << student.getPassword() << '|'
@@ -235,4 +241,3 @@ void RegistrationSystem::saveStudents() const {
         file << '\n';
     }
 }
-
